@@ -17,13 +17,13 @@ const citiesSlice = createApi({
 
         // updateCity: builder.mutation({ query: ({ id, ...patch }) => ({ url: `/cities/${id}`, method: "PATCH", body: patch }) }),
 
-        // getDetailCity: builder.query({query: (city) => `/cities/${city}`}),
+        getDetailCity: builder.query({query: (city) => `/cities/${city}`}),
 
     })
 })
 
 export default citiesSlice
 
-export const {useGetAllCitiesQuery} = citiesSlice
+export const {useGetAllCitiesQuery, useGetDetailCityQuery} = citiesSlice
 
 // ,useAddCityMutation, useGetCityNameQuery, useUpdateCityMutation, useGetAllItinerariesQuery , useGetItineraryCityQuery, useGetActivitieItineraryQuery, useGetCommentsItineraryQuery, useGetItineraryUserQuery, useGetDetailCityQuery

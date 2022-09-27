@@ -12,7 +12,7 @@ export default function CitiesScreen({ navigation }) {
             data={citiesData?.response}
             numColumns={3}
             keyExtractor={(data) => data._id}
-            renderItem={({ item }) => <CityCard title={item.city} photo={item.photo}/>}
+            renderItem={({ item }) => <CityCard title={item.city} photo={item.photo} id={item._id}/>}
         />
 
         // <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
