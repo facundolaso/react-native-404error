@@ -14,6 +14,7 @@ export default function CitiesScreen({ navigation }) {
             keyExtractor={(data) => data._id}
             renderItem={({ item }) => <CityCard title={item.city} photo={item.photo}/>}
         />
+        
 
         // <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         //     <Button onPress={() => navigation.goBack()} title="Go back home" />
