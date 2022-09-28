@@ -31,7 +31,7 @@ export default function CityDetailsScreen({ route, navigation }) {
                 <View style={styles.photoContainer}>
                     <Image style={styles.cityImage} source={{ uri: city?.photo }} />
                 </View>
-                <View>
+                <View style={{flex: 1}}>
                     <ItineraryCard search={itinerariesCity} refetchAction={refetch} />
                 </View>
             </View>
