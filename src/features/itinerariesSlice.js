@@ -11,6 +11,8 @@ const itinerarysSlice = createApi({
     endpoints: (builder) => ({
         getItineraryCity: builder.query({ query: id => `/itineraries?city=${id}` }),
 
+        getItineraryUser: builder.query({query: id => `/itineraries?user=${id}`}),
+
         // addItinerary: builder.mutation({ query: itinerary => ({ url: "/itineraries", method: "POST", body: itinerary }) }),
 
         // editItinerary: builder.mutation({ query: ({id, ...itineraryBody}) => ({ url: `/itineraries/${id}`, method: "PATCH", body: itineraryBody }) }),
@@ -24,6 +26,6 @@ const itinerarysSlice = createApi({
 
 export default itinerarysSlice
 
-export const { useGetItineraryCityQuery } = itinerarysSlice
+export const { useGetItineraryCityQuery, useGetItineraryUserQuery } = itinerarysSlice
 
 // useAddItineraryMutation, useEditItineraryMutation , useDeleteItineraryMutation, useLikeMutation
