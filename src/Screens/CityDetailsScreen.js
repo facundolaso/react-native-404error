@@ -1,11 +1,13 @@
 import { View, Text, StyleSheet, Image } from 'react-native'
 import React from 'react'
 import { useGetDetailCityQuery } from '../features/citiesSlice'
-
+import { useGetItineraryCityQuery } from '../features/itinerariesSlice'
+import ItineraryCard from '../components/ItineraryCard'
 
 
 export default function CityDetailsScreen({ route, navigation }) {
     let { data: citiesDetails } = useGetDetailCityQuery(route.params.cityId)
+    let { data: itinerariesCity, refetch } = useGetItineraryCityQuery(route.params.cityId)
     let city = citiesDetails?.response
     return (
         <View style={{ flex: 1, alignItems: 'center', backgroundColor: "#F5EDFF", }}>
@@ -29,29 +31,32 @@ export default function CityDetailsScreen({ route, navigation }) {
                 <View style={styles.photoContainer}>
                     <Image style={styles.cityImage} source={{ uri: city?.photo }} />
                 </View>
+                <View>
+                    <ItineraryCard search={itinerariesCity} refetchAction={refetch} />
+                </View>
             </View>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    titleContainer:{
-        backgroundColor:"#C89CFF",
+    titleContainer: {
+        backgroundColor: "#C89CFF",
         padding: 7,
         borderRadius: 10,
-        width:500,
+        width: 500,
     },
-    
+
     title: {
         fontSize: 40,
         color: "white",
         fontWeight: "bold",
-        textAlign:"center"
+        textAlign: "center"
     },
 
     subTitle: {
         fontWeight: "bold",
-        paddingTop:10,
+        paddingTop: 10,
     },
 
     year: {
@@ -64,9 +69,9 @@ const styles = StyleSheet.create({
         padding: 5
     },
 
-    photoContainer:{
+    photoContainer: {
         shadowColor: '#171717',
-        shadowOffset: {width: -2, height: 4},
+        shadowOffset: { width: -2, height: 4 },
         shadowOpacity: .5,
         shadowRadius: 3,
     },
