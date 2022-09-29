@@ -1,7 +1,21 @@
-import { View, Text, Image, StyleSheet, ScrollView, FlatList } from 'react-native'
+import { View, Text, Image, StyleSheet, ScrollView, FlatList, RefreshControl } from 'react-native'
 import React from 'react'
+import { useState, useEffect } from 'react';
+
+const wait = (timeout) => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+}
 
 export default function ItineraryCard({ search, refetchAction }) {
+
+    const [refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        refetchAction()
+        wait(1000).then(() => setRefreshing(false));
+    }, []);
+
     let itineraries = search
 
     const itineraryView = (itinerary) => (
@@ -75,7 +89,9 @@ export default function ItineraryCard({ search, refetchAction }) {
     )
 
     return (
-        <ScrollView showsVerticalScrollIndicator={false} style={styles.itineraryContainer}>
+        <ScrollView refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        } showsVerticalScrollIndicator={false} style={styles.itineraryContainer}>
             <View>
                 {itineraries?.response.map(itineraryView)}
                 {/* <Alerts alert={result} /> */}
