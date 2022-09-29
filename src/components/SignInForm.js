@@ -1,20 +1,24 @@
-import React, { useState } from "react";
-import { useSignInMutation } from '../features/usersSlice'
+import React, { useEffect, useState } from "react";
+import { useSignInMutation, useSignOutMutation } from '../features/usersSlice'
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
     StyleSheet,
     Text,
     View,
+    Image,
     TextInput,
     TouchableOpacity,
 } from "react-native";
 
 export default function SignIn() {
 
-    let [signIn, result] = useSignInMutation()
+    let [signIn] = useSignInMutation()
+
+    let [signOut, result] = useSignOutMutation()
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [user, setUser] = useState()
 
     const handleSignIn = async (form) => {
         const accesData =
@@ -23,62 +27,103 @@ export default function SignIn() {
             password: password,
             from: "form"
         };
-        await signIn(accesData);
-    }
-    
-    if (result.isSuccess) {
+        const userData = await signIn(accesData);
 
         let infoUserToken = async () => {
             try {
-                await AsyncStorage.setItem('token', JSON.stringify(result?.data.token))
+                await AsyncStorage.setItem('token', JSON.stringify(userData?.data.token))
             } catch (e) {
             }
-            
             console.log('Done.')
         }
-        infoUserToken()
-        
+        await infoUserToken()
+
         let infoUser = async () => {
             try {
-                await AsyncStorage.setItem('loggedUser', JSON.stringify(result.data.response))
+                await AsyncStorage.setItem('loggedUser', JSON.stringify(userData?.data.response))
             } catch (e) {
             }
-
             console.log('Done.')
         }
-        infoUser()
+        await infoUser()
+
+        const getUser = async () => {
+            try {
+                const savedUser = await AsyncStorage.getItem('loggedUser');
+                let currentUser = JSON.parse(savedUser);
+                setUser(currentUser)
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        await getUser()
     }
-    else if (result.isError) {
-        console.log(result)
+
+
+    async function signOutButton() {
+        
+        let userData = {
+            mail: user.user.mail,
+        }
+        await signOut(userData);
+        await AsyncStorage.removeItem('loggedUser');
+        await AsyncStorage.removeItem('token');
+        setUser()
     }
+    if (result) {
+        console.log(result)    
+    }
+
+    const logo = { uri: "https://i.ibb.co/1nNLRzt/logo.png" }
 
     return (
         <View style={styles.container}>
-
-            <View style={styles.inputView}>
-                <TextInput
-                    style={styles.TextInput}
-                    placeholder="Email."
-                    placeholderTextColor="#003f5c"
-                    onChangeText={(email) => setEmail(email)}
-                />
-            </View>
-
-            <View style={styles.inputView}>
-                <TextInput
-                    style={styles.TextInput}
-                    placeholder="Password."
-                    placeholderTextColor="#003f5c"
-                    secureTextEntry={true}
-                    onChangeText={(password) => setPassword(password)}
-                />
-            </View>
-
-            <TouchableOpacity style={styles.loginBtn} onPress={handleSignIn}>
-                <Text style={styles.loginText}>LOGIN</Text>
-            </TouchableOpacity>
-
-            
+            {user ?
+                (
+                    <View style={styles.containerSignOut}>
+                        <View style={styles.txtSignOut}>
+                            <Text style={styles.texto} >Welcome at Mytineraries! </Text>
+                        </View>
+                        <View style={styles.imgContainer}>
+                            <Image style={styles.image} resizeMode="cover" source={logo}></Image>
+                        </View>
+                        <View style={styles.txtSignOut}>
+                            <Text style={styles.texto} >Do you want to leave your session? Please log out. </Text>
+                        </View>
+                        <TouchableOpacity style={styles.loginBtn} onPress={signOutButton} >
+                            <Text style={styles.loginText}>Sign Out</Text>
+                        </TouchableOpacity>
+                    </View>
+                )
+                :
+                <>
+                    <View style={styles.imgContainer}>
+                            <Image style={styles.image} resizeMode="cover" source={logo}></Image>
+                        </View>
+                        <View style={styles.txtSignOut}>
+                            <Text style={styles.textSignIn} >Mytineraries</Text>
+                        </View>
+                    <View style={styles.inputView}>
+                        <TextInput
+                            style={styles.TextInput}
+                            placeholder="Email"
+                            placeholderTextColor="#003f5c"
+                            onChangeText={(email) => setEmail(email)}
+                        />
+                    </View>
+                    <View style={styles.inputView}>
+                        <TextInput
+                            style={styles.TextInput}
+                            placeholder="Password"
+                            placeholderTextColor="#003f5c"
+                            secureTextEntry={true}
+                            onChangeText={(password) => setPassword(password)}
+                        />
+                    </View>
+                    <TouchableOpacity style={styles.loginBtn} onPress={handleSignIn}>
+                        <Text style={styles.loginText}>Sign In</Text>
+                    </TouchableOpacity>
+                </>}
         </View>
     );
 }
@@ -92,7 +137,7 @@ const styles = StyleSheet.create({
     },
 
     inputView: {
-        backgroundColor: "#C89CFF",
+        backgroundColor: "#C8B6E2",
         borderRadius: 30,
         width: "90%",
         height: 40,
@@ -115,12 +160,54 @@ const styles = StyleSheet.create({
     },
 
     loginBtn: {
-        width: "80%",
+        width: "50%",
         borderRadius: 25,
         height: 50,
         alignItems: "center",
         justifyContent: "center",
         marginTop: 40,
-        backgroundColor: "#FF1493",
+        backgroundColor: "#495C83",
+        shadowColor: '#171717',
+        shadowOffset: { width: -2, height: 4 },
+        shadowOpacity: .4,
+        shadowRadius: 3,
+    },
+    loginText: {
+        color: "white",
+        fontWeight: "bold",
+    },
+    imgContainer: {
+        width: 160,
+        height: 120,
+    },
+    image: {
+        width: 160,
+        height: 130,
+    },
+    txtSignOut: {
+        width: 250,
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 25,
+    },
+    texto: {
+        color: "white",
+        fontWeight: "bold",
+    },
+    textSignIn: {
+        fontWeight: "bold",
+        padding: 2,
+        margin: 2,
+        fontSize:16
+    },
+    containerSignOut: {
+        backgroundColor: '#C8B6E2',
+        flex: 1,
+        justifyContent: "center",
+        height: "90%",
+        width: "90%",
+        alignItems: "center",
+        margin: 15,
+        borderRadius: 10,
     },
 })
