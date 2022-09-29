@@ -2,6 +2,7 @@ import { View, Text, Image, StyleSheet, ScrollView, FlatList, RefreshControl } f
 import React from 'react'
 import { useState, useEffect } from 'react';
 import Activities from './Activities';
+import Comments from './Comments';
 
 const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
@@ -84,7 +85,7 @@ export default function ItineraryCard({ search, refetchAction }) {
                     } */}
                 </View>
                 <Activities itinerary={itinerary._id} />
-                {/* <Comments itinerary={itinerary._id} /> */}
+                <Comments itinerary={itinerary._id} />
             </View>
         </View>
     )
