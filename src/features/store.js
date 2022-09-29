@@ -8,6 +8,7 @@ import itinerarysSlice from './itinerariesSlice'
 // import commentsSlice from './commentsSlice'
 import citiesSlice from './citiesSlice'
 import activitiesSlice from './activitiesSlice'
+import commentsSlice from './commentsSlice'
 
 
 export const store = configureStore({
@@ -17,6 +18,6 @@ export const store = configureStore({
         // [dataAPI.reducerPath]: dataAPI.reducer,
         [itinerarysSlice.reducerPath]: itinerarysSlice.reducer,
         [activitiesSlice.reducerPath]: activitiesSlice.reducer,
-        // [commentsSlice.reducerPath]: commentsSlice.reducer,
+        [commentsSlice.reducerPath]: commentsSlice.reducer,
     }
 })
