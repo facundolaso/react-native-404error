@@ -1,6 +1,7 @@
 import { View, Text, Image, StyleSheet, ScrollView, FlatList, RefreshControl } from 'react-native'
 import React from 'react'
 import { useState, useEffect } from 'react';
+import Activities from './Activities';
 
 const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
@@ -41,9 +42,9 @@ export default function ItineraryCard({ search, refetchAction }) {
                 </Text>
                 <View style={styles.itineraryUser}>
                     <View style={styles.itineraryUserInfo}>
-                        <Image style={styles.itineraryUserImg} source={itinerary.user.photo} alt="user" />
+                        <Image style={styles.itineraryUserImg} source={{uri: itinerary.user.photo}} alt="user" />
                         <View>
-                            <Text>{itinerary.user.name}</Text>
+                            <Text>{itinerary.user.name} {itinerary.user.lastName}</Text>
                             {/* <Like handleLike={handleLike} itinerary={itinerary}></Like> */}
                             <Text>Likes: {itinerary.likes.length}</Text>
                         </View>
@@ -82,8 +83,8 @@ export default function ItineraryCard({ search, refetchAction }) {
                         ''
                     } */}
                 </View>
-                {/* <Activities itinerary={itinerary._id} />
-                <Comments itinerary={itinerary._id} /> */}
+                <Activities itinerary={itinerary._id} />
+                {/* <Comments itinerary={itinerary._id} /> */}
             </View>
         </View>
     )
@@ -101,9 +102,6 @@ export default function ItineraryCard({ search, refetchAction }) {
 }
 
 const styles = StyleSheet.create({
-    itineraryContainer: {
-
-    },
     itineraryCard: {
         flex: 1,
         alignItems: 'center',
@@ -145,7 +143,9 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     itineraryUserImg: {
-        width: 20,
-        height: 20,
+        width: 25,
+        height: 25,
+        borderRadius: 50,
+        marginRight: 5
     },
 });
