@@ -114,8 +114,8 @@ export default function Comments({ itinerary }) {
                     {loggedUser.user ?
                         <View key={comment._id}>
                             {loggedUser.user.id == comment.user._id ?
-                                <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-around'}}>
-                                    <TouchableOpacity  onPress={() => toggleEditComment()}>
+                                <View style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-around' }}>
+                                    <TouchableOpacity onPress={() => toggleEditComment()}>
                                         <Text style={styles.editButton}>Edit comment</Text>
                                     </TouchableOpacity>
                                     <>{editCommentOpen && (
@@ -133,7 +133,6 @@ export default function Comments({ itinerary }) {
                                         </View>
                                     )}
                                     </>
-                                    {/* <button className='itineraryUser-button' onClick={(fn) => handleDeleteComment(comment._id)}>Eliminar</button> */}
                                     <TouchableOpacity onPress={() => handleDeleteComment(comment._id)}>
                                         <Text style={styles.editButton}>Delete comment</Text>
                                     </TouchableOpacity>
@@ -141,8 +140,11 @@ export default function Comments({ itinerary }) {
                                 :
                                 <>
                                     {loggedUser.user.role == "admin" ? <View>
-                                        {/* <button className='itineraryUser-button' onClick={(fn) => handleDeleteComment(comment._id)}>Eliminar</button> */}
-                                    </View> : null}
+                                        <TouchableOpacity onPress={() => handleDeleteComment(comment._id)}>
+                                            <Text style={styles.editButton}>Delete comment</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                        : null}
                                 </>
                             }
                         </View>
@@ -167,7 +169,6 @@ export default function Comments({ itinerary }) {
             <>
                 {loggedUser ?
                     <View style={styles.newCommentContainer}>
-                        {/* <button className='new-comment-toggle' onClick={toggleNewComment}>New comment</button> */}
                         <TouchableOpacity onPress={toggleNewComment}>
                             <Text style={styles.newButton}>New Comment</Text>
                         </TouchableOpacity>
