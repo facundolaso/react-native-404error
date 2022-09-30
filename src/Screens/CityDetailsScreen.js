@@ -42,13 +42,13 @@ export default function CityDetailsScreen({ route, navigation }) {
 const styles = StyleSheet.create({
     titleContainer: {
         backgroundColor: "#C89CFF",
-        padding: 7,
+        padding: 2,
         borderRadius: 10,
         width: 500,
     },
 
     title: {
-        fontSize: 40,
+        fontSize: 31,
         color: "white",
         fontWeight: "bold",
         textAlign: "center"
@@ -56,17 +56,17 @@ const styles = StyleSheet.create({
 
     subTitle: {
         fontWeight: "bold",
-        paddingTop: 10,
+        paddingTop: 5,
     },
 
     year: {
         fontWeight: "bold",
-        padding: 5
+        padding: 1
     },
 
     popu: {
         fontWeight: "bold",
-        padding: 5
+        padding: 1
     },
 
     photoContainer: {
@@ -77,8 +77,8 @@ const styles = StyleSheet.create({
     },
 
     cityImage: {
-        width: 250,
-        height: 200,
+        width: 290,
+        height: 130,
         borderRadius: 10,
         margin: 10
     },
