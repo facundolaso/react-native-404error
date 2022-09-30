@@ -1,4 +1,4 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, KeyboardAvoidingView, TouchableWithoutFeedback ,Keyboard} from 'react-native'
 import React from 'react'
 import { useState, useEffect } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -7,7 +7,6 @@ import { useNavigation } from '@react-navigation/native';
 
 
 export default function NewItinerary({ route }) {
-    const navigation = useNavigation();
 
     const [loggedUser, setUser] = useState()
     const [token, setToken] = useState()
@@ -58,55 +57,70 @@ export default function NewItinerary({ route }) {
 
     return (
         <View style={styles.newCityContainer}>
-            <View style={styles.formContainer}>
-                <View style={styles.formImageContainer}>
-                    <Image style={{ width: '100%', height: '100%' }} source={{ uri: "https://images.pexels.com/photos/4553618/pexels-photo-4553618.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" }} />
-                </View>
+    <KeyboardAvoidingView behavior="padding" style={styles.container}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+<View style={styles.formContainer}>
                 <View style={styles.inputWrapper}>
                     <View>
-                    <Text style={{ fontSize: 25 }}>Add new itinerary</Text>
+                    <Text style={{ fontSize: 25, color: "#fff", fontWeight: 'bold',}}>Add new itinerary</Text>
                     </View>
-                    {/* <Alerts alert={result} /> */}
+
                     <View style={styles.inputForm}>
-                        <Text>Itinerary Name</Text>
+                        <Text style={styles.txtForm}>Itinerary Name</Text>
                         <TextInput multiline={true} numberOfLines={2} onChangeText={(text) => onChangeName(text)} value={name} style={styles.input} />
-                        <Text>Itinerary Price</Text>
+                        <Text style={styles.txtForm} >Itinerary Price</Text>
                         <TextInput multiline={true} numberOfLines={2} onChangeText={(text) => onChangePrice(text)} value={price} style={styles.input} />
-                        <Text>Itinerary Tags</Text>
+                        <Text style={styles.txtForm} >Itinerary Tags</Text>
                         <TextInput multiline={true} numberOfLines={2} onChangeText={(text) => onChangeTags(text)} value={tags} style={styles.input} />
-                        <Text>Itinerary Duration</Text>
+                        <Text style={styles.txtForm} >Itinerary Duration</Text>
                         <TextInput multiline={true} numberOfLines={2} onChangeText={(text) => onChangeDuration(text)} value={duration} style={styles.input} />
-                        <TouchableOpacity onPress={handleItinerary}>
+                        <TouchableOpacity style={styles.editButtonCn} onPress={handleItinerary}>
                             <Text style={styles.newItineraryButton}>Submit</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
             </View>
-        </View>
+</TouchableWithoutFeedback>
+</KeyboardAvoidingView>
+</View>
     )
 }
 
+
+
 const styles = StyleSheet.create({
+
     newCityContainer: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        borderColor: 'black',
-        borderWidth: .5,
-        borderRadius: 5,
+        backgroundColor: "#F5EDFF",
+    },
+    container: {
+        flex:1,
+        width:300,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     formContainer: {
         flex: 1,
         justifyContent: 'space-evenly',
-        width: '80%',
+        backgroundColor: "#C8B6E2",
+        width: '90%',
+        margin: 10,
+        borderRadius:10,
     },
     formImageContainer: {
         flex: .3,
         width: '100%',
         height: '50%'
     },
+    txtForm: {
+        color: "#fff",
+        fontWeight: 'bold'
+    },
     inputWrapper: {
-        flex: .7,
+        flex: .9,
         alignItems: 'center',
         justifyContent: 'center'
     },
@@ -130,13 +144,20 @@ const styles = StyleSheet.create({
         shadowRadius: 2,
     },
     newItineraryButton: {
-        backgroundColor: '#495C83',
-        borderRadius: 5,
         color: '#fff',
         fontWeight: 'bold',
         alignSelf: 'center',
         padding: 3,
         fontSize: 14,
-        marginVertical: 5
+    },
+    editButtonCn:{
+        backgroundColor: '#495C83',
+        borderRadius: 10,
+        margin: 2,
+        padding:8,
+        shadowColor: '#171717',
+        shadowOffset: { width: -2, height: 4 },
+        shadowOpacity: .4,
+        shadowRadius: 3,
     },
 })
