@@ -5,8 +5,23 @@ import { useGetCommentsItineraryQuery, useNewCommentMutation, useDeleteCommentMu
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../api';
 
-export default function Comments({ itinerary }) {
+export default function Comments({ itinerary, isLogged }) {
     const axios = require('axios').default;
+
+    let isUserLogged = isLogged
+
+    const [logged, setLogged] = React.useState(false);
+
+    useEffect(()=>{
+        getUser()
+        if (isUserLogged) {
+            setLogged(false)
+            setLogged(true)
+        } else if (!isUserLogged){
+            setLogged(true)
+            setLogged(false)
+        }
+    },[isUserLogged])
 
     const [loggedUser, setUser] = useState()
     const [token, setToken] = useState()
@@ -111,9 +126,9 @@ export default function Comments({ itinerary }) {
                     <View style={styles.commentTextContainer}>
                         <Text style={{ fontStyle: 'italic' }}>{comment.comment}</Text>
                     </View>
-                    {loggedUser.user ?
+                    {isUserLogged ?
                         <View key={comment._id}>
-                            {loggedUser.user.id == comment.user._id ?
+                            {loggedUser?.user.id == comment.user._id ?
                                 <View style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-around' }}>
                                     <TouchableOpacity onPress={() => toggleEditComment()}>
                                         <Text style={styles.editButton}>Edit comment</Text>
@@ -139,7 +154,7 @@ export default function Comments({ itinerary }) {
                                 </View>
                                 :
                                 <>
-                                    {loggedUser.user.role == "admin" ? <View>
+                                    {loggedUser?.user.role == "admin" ? <View>
                                         <TouchableOpacity onPress={() => handleDeleteComment(comment._id)}>
                                             <Text style={styles.editButton}>Delete comment</Text>
                                         </TouchableOpacity>
@@ -167,7 +182,7 @@ export default function Comments({ itinerary }) {
             {comments?.response.filter(comment => comment.itinerary._id == itinerary).map(commentView)}
 
             <>
-                {loggedUser ?
+                {isUserLogged ?
                     <View style={styles.newCommentContainer}>
                         <TouchableOpacity onPress={toggleNewComment}>
                             <Text style={styles.newButton}>New Comment</Text>

@@ -38,7 +38,7 @@ export default function NewItinerary({ route }) {
     const [tags, onChangeTags] = React.useState('');
     const [duration, onChangeDuration] = React.useState('');
 
-    let [addItinerary] = useAddItineraryMutation()
+    let [addItinerary, resultNewItinerary] = useAddItineraryMutation()
 
     const handleItinerary = async (form) => {
         let tagsEdit = tags.replace(/,/g, "").replace(/;/g, "")
@@ -54,6 +54,11 @@ export default function NewItinerary({ route }) {
             duration: duration,
         };
         await addItinerary(newItinerary);
+    }
+
+    if (resultNewItinerary.isSuccess) {
+        alert(resultNewItinerary.data.message)
+        resultNewItinerary.isSuccess = false
     }
 
     return (

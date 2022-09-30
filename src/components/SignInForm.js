@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSignInMutation, useSignOutMutation } from '../features/usersSlice'
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { NativeModule } from "react-native";
 import {
     StyleSheet,
     Text,
@@ -10,15 +11,23 @@ import {
     TouchableOpacity,
 } from "react-native";
 
-export default function SignIn() {
+export default function SignIn({isUserLogged}) {
 
-    let [signIn] = useSignInMutation()
+    let [signIn, resultSignIn] = useSignInMutation()
 
-    let [signOut, result] = useSignOutMutation()
+    let [signOut, resultSignOut] = useSignOutMutation()
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [user, setUser] = useState()
+
+    useEffect(()=> {
+        if (user) {
+            isUserLogged(true)
+        } else if (user == undefined) {
+            isUserLogged(false)
+        }
+    },[user])
 
     const handleSignIn = async (form) => {
         const accesData =
@@ -45,19 +54,21 @@ export default function SignIn() {
             }
             console.log('Done.')
         }
-        await infoUser()
-
-        const getUser = async () => {
-            try {
-                const savedUser = await AsyncStorage.getItem('loggedUser');
-                let currentUser = JSON.parse(savedUser);
-                setUser(currentUser)
-            } catch (error) {
-                console.log(error)
-            }
-        }
-        await getUser()
+        await infoUser();
+        await getUser();
     }
+    const getUser = async () => {
+        try {
+            const savedUser = await AsyncStorage.getItem('loggedUser');
+            let currentUser = JSON.parse(savedUser);
+            setUser(currentUser)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    useEffect(() => {
+        getUser()
+    }, [])
 
 
     async function signOutButton() {
@@ -69,9 +80,16 @@ export default function SignIn() {
         await AsyncStorage.removeItem('loggedUser');
         await AsyncStorage.removeItem('token');
         setUser()
+
     }
-    if (result) {
-        console.log(result)    
+    if (resultSignIn.isSuccess) {
+        alert(resultSignIn.data.message)
+        resultSignIn.isSuccess = false
+    }
+
+    if (resultSignOut.isSuccess) {
+        alert(resultSignOut.data.message)
+        resultSignOut.isSuccess = false
     }
 
     const logo = { uri: "https://i.ibb.co/1nNLRzt/logo.png" }

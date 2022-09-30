@@ -6,7 +6,20 @@ import ItineraryCard from '../components/ItineraryCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-export default function MyTineraryScreen() {
+export default function MyTineraryScreen({route}) {
+
+    let isUserLogged = route.params.isLogged
+
+    const [logged, setLogged] = React.useState(false);
+
+    useEffect(()=>{
+        getUser()
+        if (isUserLogged) {
+            setLogged(true)
+        } else if (!isUserLogged){
+            setLogged(false)
+        }
+    },[isUserLogged])
 
     const [user, setUser] = useState()
 
@@ -29,7 +42,7 @@ export default function MyTineraryScreen() {
     return (
         <View style={styles.containerMyTinerary}>
             <View>
-                <ItineraryCard search={itineraries} refetchAction={refetch} />
+                <ItineraryCard search={itineraries} refetchAction={refetch} isLogged={isUserLogged}/>
             </View>
         </View>
     )
