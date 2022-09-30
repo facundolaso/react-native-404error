@@ -21,7 +21,7 @@ export default function Activities({itinerary}) {
 
   return (
     <View style={styles.activityContainer}>
-        <View>
+        <View style={styles.activityTitleContainer}>
             <Text style={styles.activityTitle}>ACTIVITIES</Text>
         </View>
         {activities?.response.filter(activity => activity.itinerary._id == itinerary).map(activitieView) }
@@ -38,14 +38,17 @@ const styles = StyleSheet.create({
         borderBottomWidth: 2,
         paddingVertical: 5
     },
+    activityTitleContainer: {
+        borderRadius: 20, 
+    },
     activityTitle: {
         fontSize: 15,
         color: '#fff',
         paddingVertical: 5,
         paddingHorizontal: 10,
         backgroundColor: '#7482ff',
-        borderRadius: 10,
-        width: 85
+        borderRadius: 20,
+        width: 100
     },  
     activityImage:{
         width: '100%',

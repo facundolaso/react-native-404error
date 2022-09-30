@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSignInMutation, useSignOutMutation } from '../features/usersSlice'
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { NativeModule } from "react-native";
 import {
     StyleSheet,
     Text,
@@ -45,19 +46,23 @@ export default function SignIn() {
             }
             console.log('Done.')
         }
-        await infoUser()
+        await infoUser();
+        await getUser();
+        RNRestart.Restart();
 
-        const getUser = async () => {
-            try {
-                const savedUser = await AsyncStorage.getItem('loggedUser');
-                let currentUser = JSON.parse(savedUser);
-                setUser(currentUser)
-            } catch (error) {
-                console.log(error)
-            }
-        }
-        await getUser()
     }
+    const getUser = async () => {
+        try {
+            const savedUser = await AsyncStorage.getItem('loggedUser');
+            let currentUser = JSON.parse(savedUser);
+            setUser(currentUser)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    useEffect(() => {
+        getUser()
+    }, [])
 
 
     async function signOutButton() {
@@ -69,11 +74,13 @@ export default function SignIn() {
         await AsyncStorage.removeItem('loggedUser');
         await AsyncStorage.removeItem('token');
         setUser()
+        NativeModules.DevSettings.reload();
+
     }
     if (result) {
         console.log(result)    
     }
-
+    console.log(user)
     const logo = { uri: "https://i.ibb.co/1nNLRzt/logo.png" }
 
     return (
