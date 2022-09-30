@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { useGetDetailCityQuery } from '../features/citiesSlice'
 import { useGetItineraryCityQuery } from '../features/itinerariesSlice'
@@ -31,7 +31,10 @@ export default function CityDetailsScreen({ route, navigation }) {
                 <View style={styles.photoContainer}>
                     <Image style={styles.cityImage} source={{ uri: city?.photo }} />
                 </View>
-                <View style={{flex: 1}}>
+                <TouchableOpacity onPress={() => navigation.navigate('NewItinerary', {cityId: city._id})}>
+                    <Text style={styles.newItineraryButton}>Add new itinerary</Text>
+                </TouchableOpacity>
+                <View style={{ flex: 1 }}>
                     <ItineraryCard search={itinerariesCity} refetchAction={refetch} />
                 </View>
             </View>
@@ -82,5 +85,16 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         margin: 10
     },
+
+    newItineraryButton: {
+        backgroundColor: '#495C83',
+        borderRadius: 5,
+        color: '#fff',
+        fontWeight: 'bold',
+        alignSelf: 'center',
+        padding: 3,
+        fontSize: 14,
+        marginVertical: 5
+    }
 
 });

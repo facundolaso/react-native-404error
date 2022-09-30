@@ -9,6 +9,7 @@ import CitiesScreen from '../Screens/CitiesScreen'
 import CityDetailsScreen from '../Screens/CityDetailsScreen'
 import SignInScreen from '../Screens/SignInScreen'
 import MyTineraryScreen from '../Screens/MyTineraryScreen'
+import NewItinerary from '../Screens/NewItinerary'
 
 const Drawer = createDrawerNavigator();
 
@@ -36,6 +37,7 @@ export default function DrawerNav() {
             <Drawer.Screen options={{ drawerIcon: () => <Image style={{ width: 30, height: 30 }} source={{ uri: "https://cdn-icons-png.flaticon.com/512/263/263115.png" }} /> }} name="Home" component={HomeScreen} />
             <Drawer.Screen options={{ drawerIcon: () => <Image style={{ width: 30, height: 30 }} source={{ uri: "https://cdn-icons-png.flaticon.com/512/2451/2451548.png" }} /> }} name="Cities" component={CitiesScreen} />
             <Drawer.Screen options={{ drawerItemStyle:{display: 'none'}}} name="Details" component={CityDetailsScreen} />
+            <Drawer.Screen options={{ title: "New Itinerary", drawerItemStyle:{display: 'none'}}} name="NewItinerary" component={NewItinerary} />
             {loggedUser ?
                 <>
                     <Drawer.Screen options={{ drawerIcon: () => <Image style={{ width: 30, height: 30 }} source={{ uri: "https://cdn-icons-png.flaticon.com/512/6889/6889707.png" }} /> }} name="MyTinerary" component={MyTineraryScreen} />

@@ -1,14 +1,76 @@
-import { View, Text, Image, StyleSheet, ScrollView, FlatList, RefreshControl } from 'react-native'
+import { View, Text, Image, StyleSheet, ScrollView, FlatList, RefreshControl, TouchableOpacity, TextInput } from 'react-native'
 import React from 'react'
 import { useState, useEffect } from 'react';
 import Activities from './Activities';
 import Comments from './Comments';
+import Like from './Like';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import api from '../api';
+import { useEditItineraryMutation, useDeleteItineraryMutation} from '../features/itinerariesSlice';
 
 const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }
 
 export default function ItineraryCard({ search, refetchAction }) {
+    const axios = require('axios').default;
+
+    const [name, onChangeName] = React.useState('');
+    const [price, onChangePrice] = React.useState('');
+    const [tags, onChangeTags] = React.useState('');
+    const [duration, onChangeDuration] = React.useState('');
+
+
+    const [loggedUser, setUser] = useState()
+    const [token, setToken] = useState()
+
+    const getUser = async () => {
+        try {
+            const savedUser = await AsyncStorage.getItem("loggedUser");
+            let currentUser = JSON.parse(savedUser)
+            const savedToken = await AsyncStorage.getItem("token");
+            let currentToken = JSON.parse(savedToken)
+            setUser(currentUser)
+            setToken(currentToken)
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
+        getUser()
+    }, [])
+
+    const [editItinearyOpen, setEditItinerary] = useState(false)
+    function toggleEditItinerary() {
+        onChangeName('')
+        onChangePrice('')
+        onChangeTags('')
+        onChangeDuration('')
+        setEditItinerary(wasOpened => !wasOpened)
+    }
+
+    let [editItinerary] = useEditItineraryMutation()
+    const handleEditItinerary = async (itineraryId) => {
+        const newEditItinerary =
+        {
+            name: name,
+            price: price,
+            tags: tags,
+            duration: duration,
+            id: itineraryId
+        };
+        await editItinerary(newEditItinerary);
+        setEditItinerary(false)
+        refetchAction()
+    }
+
+    const [deleteCity, result] = useDeleteItineraryMutation()
+    const handleDeleteItinerary = async (itineraryId) => {
+        await deleteCity(itineraryId);
+        refetchAction()
+    }
+
 
     const [refreshing, setRefreshing] = useState(false);
 
@@ -17,6 +79,22 @@ export default function ItineraryCard({ search, refetchAction }) {
         refetchAction()
         wait(1000).then(() => setRefreshing(false));
     }, []);
+
+    const handleLike = async (itineraryId) => {
+        const config = {
+            headers: { Authorization: `Bearer ${token}` }
+        };
+
+        const bodyParameters = {
+            
+        };
+
+        axios.patch(
+            `${api}/itineraries/likes/${itineraryId}`,
+            bodyParameters,
+            config
+        ).then(res => console.log(res.data)).catch(err => console.log(err)).finally(()=> refetchAction())
+    }
 
     let itineraries = search
 
@@ -43,46 +121,72 @@ export default function ItineraryCard({ search, refetchAction }) {
                 </Text>
                 <View style={styles.itineraryUser}>
                     <View style={styles.itineraryUserInfo}>
-                        <Image style={styles.itineraryUserImg} source={{uri: itinerary.user.photo}} alt="user" />
+                        <Image style={styles.itineraryUserImg} source={{ uri: itinerary.user.photo }} alt="user" />
                         <View>
                             <Text>{itinerary.user.name} {itinerary.user.lastName}</Text>
-                            {/* <Like handleLike={handleLike} itinerary={itinerary}></Like> */}
+                            <Text>
+                            <Like handleLike={handleLike} itinerary={itinerary} loggedUser={loggedUser}></Like>
+                            </Text>
                             <Text>Likes: {itinerary.likes.length}</Text>
                         </View>
                     </View>
-                    {/* {localStorage.getItem("loggedUser") ?
+                    {loggedUser.user ?
                         <>
                             {loggedUser.user.id == itinerary.user._id ?
                                 <View>
-                                    <button className='itineraryUser-button' onClick={toggleEditItinerary}>Modificar</button>
+                                    <TouchableOpacity onPress={() => toggleEditItinerary()}>
+                                        <Text style={styles.editButton}>Edit Itinerary</Text>
+                                    </TouchableOpacity>
                                     <>{editItinearyOpen && (
-                                        <form id={itinerary._id} className='comment-form' onSubmit={handleEditItinerary}>
-                                            {formEditItinerary.map(inputForm)}
-                                            <input className='itineraryUser-button' type="submit" name="" value="Submit" />
-                                        </form>
+                                        <>
+                                            <Text>Itinerary Name</Text>
+                                            <TextInput multiline={true} numberOfLines={4} onChangeText={(text) => onChangeName(text)} value={name} style={{ marginVertical: 10, borderColor: 'black', borderWidth: 0.5, width: 200 }} />
+                                            <Text>Itinerary Price</Text>
+                                            <TextInput multiline={true} numberOfLines={4} onChangeText={(text) => onChangePrice(text)} value={price} style={{ marginVertical: 10, borderColor: 'black', borderWidth: 0.5, width: 200 }} />
+                                            <Text>Itinerary Tags</Text>
+                                            <TextInput multiline={true} numberOfLines={4} onChangeText={(text) => onChangeTags(text)} value={tags} style={{ marginVertical: 10, borderColor: 'black', borderWidth: 0.5, width: 200 }} />
+                                            <Text>Itinerary Duration</Text>
+                                            <TextInput multiline={true} numberOfLines={4} onChangeText={(text) => onChangeDuration(text)} value={duration} style={{ marginVertical: 10, borderColor: 'black', borderWidth: 0.5, width: 200 }} />
+                                            <TouchableOpacity style={styles.loginBtn} onPress={() => handleEditItinerary(itinerary._id)}>
+                                                <Text style={styles.editButton}>Submit</Text>
+                                            </TouchableOpacity>
+                                        </>
                                     )}
                                     </>
 
-                                    <button id={itinerary._id} className='itineraryUser-button' onClick={handleDeleteItinerary}>Eliminar</button>
+                                    <TouchableOpacity style={styles.loginBtn} onPress={() => handleDeleteItinerary(itinerary._id)}>
+                                        <Text style={styles.editButton}>Delete Itinerary</Text>
+                                    </TouchableOpacity>
                                 </View>
                                 :
                                 <>
                                     {loggedUser.user.role == "admin" ? <View>
-                                        <button className='itineraryUser-button' onClick={toggleEditItinerary}>Modificar</button>
+                                        <TouchableOpacity onPress={() => toggleEditItinerary()}>
+                                            <Text style={styles.editButton}>Edit Itinerary</Text>
+                                        </TouchableOpacity>
                                         <>{editItinearyOpen && (
-                                            <form id={itinerary._id} className='comment-form' onSubmit={handleEditItinerary}>
-                                                {formEditItinerary.map(inputForm)}
-                                                <input className='itineraryUser-button' type="submit" name="" value="Submit" />
-                                            </form>
+                                            <>
+                                                <Text>Itinerary Name</Text>
+                                                <TextInput multiline={true} numberOfLines={4} onChangeText={(text) => onChangeName(text)} value={name} style={{ marginVertical: 10, borderColor: 'black', borderWidth: 0.5, width: 200 }} />
+                                                <Text>Itinerary Price</Text>
+                                                <TextInput multiline={true} numberOfLines={4} onChangeText={(text) => onChangePrice(text)} value={price} style={{ marginVertical: 10, borderColor: 'black', borderWidth: 0.5, width: 200 }} />
+                                                <Text>Itinerary Tags</Text>
+                                                <TextInput multiline={true} numberOfLines={4} onChangeText={(text) => onChangeTags(text)} value={tags} style={{ marginVertical: 10, borderColor: 'black', borderWidth: 0.5, width: 200 }} />
+                                                <Text>Itinerary Duration</Text>
+                                                <TextInput multiline={true} numberOfLines={4} onChangeText={(text) => onChangeDuration(text)} value={duration} style={{ marginVertical: 10, borderColor: 'black', borderWidth: 0.5, width: 200 }} />
+                                                <TouchableOpacity style={styles.loginBtn} onPress={() => handleEditItinerary(itinerary._id)}>
+                                                    <Text style={styles.editButton}>Submit</Text>
+                                                </TouchableOpacity>
+                                            </>
                                         )}
                                         </>
-                                    </View> : ''}
+                                    </View> : null}
                                 </>
                             }
                         </>
                         :
-                        ''
-                    } */}
+                        null
+                    }
                 </View>
                 <Activities itinerary={itinerary._id} />
                 <Comments itinerary={itinerary._id} />
@@ -148,5 +252,15 @@ const styles = StyleSheet.create({
         height: 25,
         borderRadius: 50,
         marginRight: 5
+    },
+    editButton: {
+        backgroundColor: '#495C83',
+        borderRadius: 5,
+        color: '#fff',
+        fontWeight: 'bold',
+        alignSelf: 'center',
+        padding: 3,
+        fontSize: 14,
+        marginVertical: 5
     },
 });
