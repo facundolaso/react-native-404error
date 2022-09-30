@@ -3,12 +3,25 @@ import React from 'react'
 import { useGetDetailCityQuery } from '../features/citiesSlice'
 import { useGetItineraryCityQuery } from '../features/itinerariesSlice'
 import ItineraryCard from '../components/ItineraryCard'
+import { useEffect } from 'react'
 
 
 export default function CityDetailsScreen({ route, navigation }) {
     let { data: citiesDetails } = useGetDetailCityQuery(route.params.cityId)
     let { data: itinerariesCity, refetch } = useGetItineraryCityQuery(route.params.cityId)
     let city = citiesDetails?.response
+
+    let isUserLogged = route.params.isLogged
+
+    const [logged, setLogged] = React.useState(false);
+
+    useEffect(() => {
+        if (isUserLogged) {
+            setLogged(true)
+        } else if (!isUserLogged) {
+            setLogged(false)
+        }
+    }, [isUserLogged])
 
 
     return (
@@ -35,17 +48,20 @@ export default function CityDetailsScreen({ route, navigation }) {
                 <View style={styles.photoContainer}>
                     <Image style={styles.cityImage} source={{ uri: city?.photo }} />
                 </View>
-                </View>
+                                </View>
         </TouchableWithoutFeedback>
 
+                {isUserLogged ?
                 <View style={styles.newItinerary}>
-                <TouchableOpacity onPress={() => navigation.navigate('NewItinerary', {cityId: city._id})}>
-                    <Text style={styles.newItineraryButton}>Add new itinerary</Text>
-                </TouchableOpacity>
-                </View>
+                    <TouchableOpacity onPress={() => navigation.navigate('NewItinerary', { cityId: city._id })}>
+                        <Text style={styles.newItineraryButton}>Add new itinerary</Text>
+                    </TouchableOpacity>
+                    </View>
+                    :
+                    null}
 
                 <View style={{ flex: 1 }}>
-                    <ItineraryCard search={itinerariesCity} refetchAction={refetch} />
+                    <ItineraryCard search={itinerariesCity} refetchAction={refetch} isLogged={route.params.isLogged} />
                 </View>
             </View>
         </View>

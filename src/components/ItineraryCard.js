@@ -12,8 +12,22 @@ const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }
 
-export default function ItineraryCard({ search, refetchAction }) {
+export default function ItineraryCard({ search, refetchAction, isLogged }) {
     const axios = require('axios').default;
+
+    let isUserLogged = isLogged
+
+    const [logged, setLogged] = React.useState(false);
+
+    useEffect(()=>{
+        getUser()
+        if (isUserLogged) {
+            setLogged(true)
+        } else if (!isUserLogged){
+            setLogged(false)
+        }
+    },[isUserLogged])
+
 
     const [name, onChangeName] = React.useState('');
     const [price, onChangePrice] = React.useState('');
@@ -50,7 +64,7 @@ export default function ItineraryCard({ search, refetchAction }) {
         setEditItinerary(wasOpened => !wasOpened)
     }
 
-    let [editItinerary] = useEditItineraryMutation()
+    let [editItinerary, resultEditItinerary] = useEditItineraryMutation()
     const handleEditItinerary = async (itineraryId) => {
         const newEditItinerary =
         {
@@ -65,10 +79,19 @@ export default function ItineraryCard({ search, refetchAction }) {
         refetchAction()
     }
 
-    const [deleteCity, result] = useDeleteItineraryMutation()
+    if (resultEditItinerary.isSuccess) {
+        alert(resultEditItinerary.data.message)
+        resultEditItinerary.isSuccess = false
+    }
+
+    const [deleteCity, resultDeleteItinerary] = useDeleteItineraryMutation()
     const handleDeleteItinerary = async (itineraryId) => {
         await deleteCity(itineraryId);
         refetchAction()
+    }
+    if (resultDeleteItinerary.isSuccess) {
+        alert(resultDeleteItinerary.data.message)
+        resultDeleteItinerary.isSuccess = false
     }
 
 
@@ -130,9 +153,9 @@ export default function ItineraryCard({ search, refetchAction }) {
                             <Text>Likes: {itinerary.likes.length}</Text>
                         </View>
                     </View>
-                    {loggedUser.user ?
+                    {isUserLogged ?
                         <>
-                            {loggedUser.user.id == itinerary.user._id ?
+                            {loggedUser?.user.id == itinerary.user._id ?
                                 <View>
                                     <TouchableOpacity style={styles.editButtonCn} onPress={() => toggleEditItinerary()}>
                                         <Text style={styles.editButton}>Edit Itinerary</Text>
@@ -159,9 +182,9 @@ export default function ItineraryCard({ search, refetchAction }) {
                                 </View>
                                 :
                                 <>
-                                    {loggedUser.user.role == "admin" ? <View>
-                                    <View style={styles.editButtonCn}>
 
+                                    {loggedUser?.user.role == "admin" ? <View>
+                                    <View style={styles.editButtonCn}>
                                         <TouchableOpacity onPress={() => toggleEditItinerary()}>
                                             <Text style={styles.editButtonCn}>Edit Itinerary</Text>
                                         </TouchableOpacity>
@@ -190,8 +213,8 @@ export default function ItineraryCard({ search, refetchAction }) {
                         null
                     }
                 </View>
-                <Activities itinerary={itinerary._id} />
-                <Comments itinerary={itinerary._id} />
+                <Activities itinerary={itinerary._id}/>
+                <Comments itinerary={itinerary._id} isLogged={isLogged}/>
             </View>
         </View>
     )

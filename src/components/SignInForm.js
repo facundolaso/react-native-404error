@@ -11,15 +11,23 @@ import {
     TouchableOpacity,
 } from "react-native";
 
-export default function SignIn() {
+export default function SignIn({isUserLogged}) {
 
-    let [signIn] = useSignInMutation()
+    let [signIn, resultSignIn] = useSignInMutation()
 
-    let [signOut, result] = useSignOutMutation()
+    let [signOut, resultSignOut] = useSignOutMutation()
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [user, setUser] = useState()
+
+    useEffect(()=> {
+        if (user) {
+            isUserLogged(true)
+        } else if (user == undefined) {
+            isUserLogged(false)
+        }
+    },[user])
 
     const handleSignIn = async (form) => {
         const accesData =
@@ -48,8 +56,6 @@ export default function SignIn() {
         }
         await infoUser();
         await getUser();
-        RNRestart.Restart();
-
     }
     const getUser = async () => {
         try {
@@ -74,11 +80,15 @@ export default function SignIn() {
         await AsyncStorage.removeItem('loggedUser');
         await AsyncStorage.removeItem('token');
         setUser()
-        NativeModules.DevSettings.reload();
-
     }
-    if (result) {
-        console.log(result)    
+    if (resultSignIn.isSuccess) {
+        alert(resultSignIn.data.message)
+        resultSignIn.isSuccess = false
+    }
+
+    if (resultSignOut.isSuccess) {
+        alert(resultSignOut.data.message)
+        resultSignOut.isSuccess = false
     }
     console.log(user)
     const logo = { uri: "https://i.ibb.co/1nNLRzt/logo.png" }
