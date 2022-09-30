@@ -157,7 +157,7 @@ export default function ItineraryCard({ search, refetchAction, isLogged }) {
                         <>
                             {loggedUser?.user.id == itinerary.user._id ?
                                 <View>
-                                    <TouchableOpacity onPress={() => toggleEditItinerary()}>
+                                    <TouchableOpacity style={styles.editButtonCn} onPress={() => toggleEditItinerary()}>
                                         <Text style={styles.editButton}>Edit Itinerary</Text>
                                     </TouchableOpacity>
                                     <>{editItinearyOpen && (
@@ -170,23 +170,25 @@ export default function ItineraryCard({ search, refetchAction, isLogged }) {
                                             <TextInput multiline={true} numberOfLines={4} onChangeText={(text) => onChangeTags(text)} value={tags} style={{ marginVertical: 10, borderColor: 'black', borderWidth: 0.5, width: 200 }} />
                                             <Text>Itinerary Duration</Text>
                                             <TextInput multiline={true} numberOfLines={4} onChangeText={(text) => onChangeDuration(text)} value={duration} style={{ marginVertical: 10, borderColor: 'black', borderWidth: 0.5, width: 200 }} />
-                                            <TouchableOpacity style={styles.loginBtn} onPress={() => handleEditItinerary(itinerary._id)}>
-                                                <Text style={styles.editButton}>Submit</Text>
+                                            <TouchableOpacity style={styles.editButtonCn} onPress={() => handleEditItinerary(itinerary._id)}>
+                                                <Text style={styles.editButtonCn}>Submit</Text>
                                             </TouchableOpacity>
                                         </>
                                     )}
                                     </>
-
-                                    <TouchableOpacity style={styles.loginBtn} onPress={() => handleDeleteItinerary(itinerary._id)}>
+                                    <TouchableOpacity style={styles.editButtonCn} onPress={() => handleDeleteItinerary(itinerary._id)}>
                                         <Text style={styles.editButton}>Delete Itinerary</Text>
                                     </TouchableOpacity>
                                 </View>
                                 :
                                 <>
+
                                     {loggedUser?.user.role == "admin" ? <View>
+                                    <View style={styles.editButtonCn}>
                                         <TouchableOpacity onPress={() => toggleEditItinerary()}>
-                                            <Text style={styles.editButton}>Edit Itinerary</Text>
+                                            <Text style={styles.editButtonCn}>Edit Itinerary</Text>
                                         </TouchableOpacity>
+                                    </View>
                                         <>{editItinearyOpen && (
                                             <>
                                                 <Text>Itinerary Name</Text>
@@ -197,8 +199,8 @@ export default function ItineraryCard({ search, refetchAction, isLogged }) {
                                                 <TextInput multiline={true} numberOfLines={4} onChangeText={(text) => onChangeTags(text)} value={tags} style={{ marginVertical: 10, borderColor: 'black', borderWidth: 0.5, width: 200 }} />
                                                 <Text>Itinerary Duration</Text>
                                                 <TextInput multiline={true} numberOfLines={4} onChangeText={(text) => onChangeDuration(text)} value={duration} style={{ marginVertical: 10, borderColor: 'black', borderWidth: 0.5, width: 200 }} />
-                                                <TouchableOpacity style={styles.loginBtn} onPress={() => handleEditItinerary(itinerary._id)}>
-                                                    <Text style={styles.editButton}>Submit</Text>
+                                                <TouchableOpacity style={styles.editButtonCn} onPress={() => handleEditItinerary(itinerary._id)}>
+                                                    <Text style={styles.editButtonCn}>Submit</Text>
                                                 </TouchableOpacity>
                                             </>
                                         )}
@@ -223,7 +225,6 @@ export default function ItineraryCard({ search, refetchAction, isLogged }) {
         } showsVerticalScrollIndicator={false} style={styles.itineraryContainer}>
             <View>
                 {itineraries?.response.map(itineraryView)}
-                {/* <Alerts alert={result} /> */}
             </View>
         </ScrollView>
     )
@@ -282,8 +283,19 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontWeight: 'bold',
         alignSelf: 'center',
-        padding: 3,
         fontSize: 14,
         marginVertical: 5
+    },
+    editButtonCn:{
+        flex:1,
+        alignSelf: 'center',
+        backgroundColor: '#495C83',
+        borderRadius: 10,
+        width:"50%",
+        margin: 2,
+        shadowColor: '#171717',
+        shadowOffset: { width: -2, height: 4 },
+        shadowOpacity: .4,
+        shadowRadius: 3,
     },
 });

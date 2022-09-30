@@ -1,4 +1,4 @@
-import { View, Text, Image, TouchableOpacity, StyleSheet, TextInput } from 'react-native'
+import { View, Text, Image, TouchableOpacity, StyleSheet, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback ,Keyboard} from 'react-native'
 import React from 'react'
 import { useState, useEffect } from 'react';
 import { useGetCommentsItineraryQuery, useNewCommentMutation, useDeleteCommentMutation, useEditCommentMutation } from '../features/commentsSlice';
@@ -116,11 +116,12 @@ export default function Comments({ itinerary, isLogged }) {
     const commentView = (comment) => (
         <>
             {isOpened && (
+                
                 <View style={styles.commentInfo}>
                     <View style={styles.commentUser}>
                         <Image style={styles.userCommentPhoto} source={{ uri: comment.user.photo }} alt="user-photo" />
                         <View>
-                            <Text>{comment.user.name} {comment.user.lastName}</Text>
+                            <Text>{comment.user.name}{comment.user.lastName}</Text>
                         </View>
                     </View>
                     <View style={styles.commentTextContainer}>
@@ -134,7 +135,10 @@ export default function Comments({ itinerary, isLogged }) {
                                         <Text style={styles.editButton}>Edit comment</Text>
                                     </TouchableOpacity>
                                     <>{editCommentOpen && (
-                                        <View>
+                                        
+                                            <View>
+                                            
+                                            
                                             <TextInput
                                                 multiline={true}
                                                 numberOfLines={4}
@@ -142,10 +146,11 @@ export default function Comments({ itinerary, isLogged }) {
                                                 value={value}
                                                 style={{ marginVertical: 10, padding: 10, borderColor: 'black', borderWidth: 0.5, width: 200 }}
                                             />
-                                            <TouchableOpacity style={styles.loginBtn} onPress={() => handleEditComment(comment._id)}>
-                                                <Text style={styles.editButton}>Submit</Text>
+                                            <TouchableOpacity style={styles.newCommentBtn} onPress={() => handleEditComment(comment._id)}>
+                                                <Text style={styles.newButton}>Submit</Text>
                                             </TouchableOpacity>
                                         </View>
+                                    
                                     )}
                                     </>
                                     <TouchableOpacity onPress={() => handleDeleteComment(comment._id)}>
@@ -173,6 +178,7 @@ export default function Comments({ itinerary, isLogged }) {
     )
 
     return (
+                            
         <View style={styles.commentsContainer}>
             <View>
                 <TouchableOpacity style={styles.commentsButton} onPress={toggle}>
@@ -184,7 +190,7 @@ export default function Comments({ itinerary, isLogged }) {
             <>
                 {isUserLogged ?
                     <View style={styles.newCommentContainer}>
-                        <TouchableOpacity onPress={toggleNewComment}>
+                        <TouchableOpacity style={styles.newCommentBtn} onPress={toggleNewComment}>
                             <Text style={styles.newButton}>New Comment</Text>
                         </TouchableOpacity>
                         <>
@@ -197,8 +203,8 @@ export default function Comments({ itinerary, isLogged }) {
                                         value={value}
                                         style={{ padding: 10, borderColor: 'black', borderWidth: 2, width: '100%' }}
                                     />
-                                    <TouchableOpacity style={styles.loginBtn} onPress={handleAddComment}>
-                                        <Text style={styles.editButton}>Submit</Text>
+                                    <TouchableOpacity style={styles.newCommentBtn} onPress={handleAddComment}>
+                                        <Text style={styles.newButton}>Submit</Text>
                                     </TouchableOpacity>
                                 </View>
                             )}
@@ -208,10 +214,12 @@ export default function Comments({ itinerary, isLogged }) {
                     null}
             </>
         </View>
+                    
     )
 }
 
 const styles = StyleSheet.create({
+
     commentsContainer: {
         flex: 1,
         justifyContent: 'center',
@@ -223,6 +231,7 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         paddingVertical: 2,
         paddingHorizontal: 8,
+        margin:5
     },
     textButton: {
         color: '#fff'
@@ -256,14 +265,24 @@ const styles = StyleSheet.create({
         width: '100%'
     },
     newButton: {
-        backgroundColor: '#495C83',
-        borderRadius: 5,
         color: '#fff',
         fontWeight: 'bold',
         alignSelf: 'center',
         padding: 3,
         fontSize: 14,
-        marginVertical: 10
+        marginVertical: 5,
+    },
+    newCommentBtn: {
+        justifyContent: 'center',
+        alignSelf: 'center',
+        borderRadius:10,
+        backgroundColor: '#495C83',
+        margin:10,
+        shadowColor: '#171717',
+        shadowOffset: { width: -2, height: 4 },
+        shadowOpacity: .5,
+        shadowRadius: 3,
+        width: "50%"
     },
     editButton: {
         backgroundColor: '#495C83',

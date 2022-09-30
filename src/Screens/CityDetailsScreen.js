@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity,  KeyboardAvoidingView, TouchableWithoutFeedback ,Keyboard } from 'react-native'
 import React from 'react'
 import { useGetDetailCityQuery } from '../features/citiesSlice'
 import { useGetItineraryCityQuery } from '../features/itinerariesSlice'
@@ -23,9 +23,12 @@ export default function CityDetailsScreen({ route, navigation }) {
         }
     }, [isUserLogged])
 
+
     return (
         <View style={{ flex: 1, alignItems: 'center', backgroundColor: "#F5EDFF", }}>
             <View style={{ flex: 1, alignItems: "center", }}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View style={{ flex: 1, alignItems: "center", }}>
                 <View style={styles.titleContainer}>
                     <Text style={styles.title}>{city?.city}</Text>
                 </View>
@@ -45,12 +48,18 @@ export default function CityDetailsScreen({ route, navigation }) {
                 <View style={styles.photoContainer}>
                     <Image style={styles.cityImage} source={{ uri: city?.photo }} />
                 </View>
+                                </View>
+        </TouchableWithoutFeedback>
+
                 {isUserLogged ?
+                <View style={styles.newItinerary}>
                     <TouchableOpacity onPress={() => navigation.navigate('NewItinerary', { cityId: city._id })}>
                         <Text style={styles.newItineraryButton}>Add new itinerary</Text>
                     </TouchableOpacity>
+                    </View>
                     :
                     null}
+
                 <View style={{ flex: 1 }}>
                     <ItineraryCard search={itinerariesCity} refetchAction={refetch} isLogged={route.params.isLogged} />
                 </View>
@@ -60,15 +69,21 @@ export default function CityDetailsScreen({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex:1,
+        width:300,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
     titleContainer: {
         backgroundColor: "#C89CFF",
-        padding: 7,
+        padding: 2,
         borderRadius: 10,
         width: 500,
     },
 
     title: {
-        fontSize: 40,
+        fontSize: 31,
         color: "white",
         fontWeight: "bold",
         textAlign: "center"
@@ -76,17 +91,17 @@ const styles = StyleSheet.create({
 
     subTitle: {
         fontWeight: "bold",
-        paddingTop: 10,
+        paddingTop: 5,
     },
 
     year: {
         fontWeight: "bold",
-        padding: 5
+        padding: 1
     },
 
     popu: {
         fontWeight: "bold",
-        padding: 5
+        padding: 1
     },
 
     photoContainer: {
@@ -97,21 +112,28 @@ const styles = StyleSheet.create({
     },
 
     cityImage: {
-        width: 250,
-        height: 200,
+        width: 290,
+        height: 130,
         borderRadius: 10,
         margin: 10
     },
 
     newItineraryButton: {
-        backgroundColor: '#495C83',
-        borderRadius: 5,
         color: '#fff',
         fontWeight: 'bold',
         alignSelf: 'center',
         padding: 3,
         fontSize: 14,
-        marginVertical: 5
-    }
+        marginVertical: 5,
+    },
+    newItinerary: {
+        borderRadius:10,
+        backgroundColor: '#495C83',
+        margin:10,
+        shadowColor: '#171717',
+        shadowOffset: { width: -2, height: 4 },
+        shadowOpacity: .5,
+        shadowRadius: 3,
+    },
 
 });

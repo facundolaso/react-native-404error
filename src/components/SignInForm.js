@@ -80,7 +80,6 @@ export default function SignIn({isUserLogged}) {
         await AsyncStorage.removeItem('loggedUser');
         await AsyncStorage.removeItem('token');
         setUser()
-
     }
     if (resultSignIn.isSuccess) {
         alert(resultSignIn.data.message)
@@ -91,7 +90,7 @@ export default function SignIn({isUserLogged}) {
         alert(resultSignOut.data.message)
         resultSignOut.isSuccess = false
     }
-
+    console.log(user)
     const logo = { uri: "https://i.ibb.co/1nNLRzt/logo.png" }
 
     return (

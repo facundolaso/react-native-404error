@@ -5,7 +5,7 @@ import CallToAction from '../components/CallToAction'
 
 export default function HomeScreen({ navigation }) {
     return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', height:"100%", width:"100%" }}>
             <CallToAction/>
             <Carousel/>
         </View>

@@ -18,14 +18,14 @@ export default function CallToAction() {
                     </View>
                     <View style={{ flex: 1, alignItems: 'center' }}>
                         <Text style={styles.title}>MyTinerary</Text>
-                        <Text style={{fontSize: 15, fontWeight: 'bold'}}>A trip to happiness</Text>
+                        <Text style={{fontSize: 15}}>A trip to happiness</Text>
                     </View>
                     <View>
                         <TouchableHighlight
                             style={styles.button}
                             onPress={() => navigation.navigate('Cities')}
                         >
-                            <Text style={{ color: '#fff' }}>Get started</Text>
+                            <Text style={{ color: '#fff', fontWeight: "bold" }}>Get started</Text>
                         </TouchableHighlight>
                     </View>
                 </View>
@@ -49,16 +49,16 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     imgContainer: {
-        width: 120,
-        height: 100,
+        width: 100,
+        height: 80,
         padding: 5
     },
     image: {
-        width: '90%',
-        height: '90%'
+        width: 100,
+        height: 80,
     },
     callToAction: {
-        flex: 0.6,
+        flex: .8,
         width: 250,
         backgroundColor: 'rgba(255, 255, 255, 0.7)',
         justifyContent: 'center',
@@ -67,7 +67,8 @@ const styles = StyleSheet.create({
         padding: 10
     },
     title: {
-        fontSize: 50,
+        fontSize: 40,
+        fontWeight: "bold",
         color: '#495c83',
     },
     button: {
